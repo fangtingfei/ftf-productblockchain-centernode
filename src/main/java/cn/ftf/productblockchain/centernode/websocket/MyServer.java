@@ -1,10 +1,11 @@
 package cn.ftf.productblockchain.centernode.websocket;
 
 
-import cn.ftf.productblockchain.centernode.controller.WebSocketController;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
@@ -16,48 +17,37 @@ import java.net.InetSocketAddress;
  */
 
 public class MyServer extends WebSocketServer {
+    Logger logger= LoggerFactory.getLogger(getClass());
     private int port;
 
     public MyServer(int port) {
-        super(new InetSocketAddress(port));
+         super(new InetSocketAddress(port));
         this.port = port;
     }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        System.out.println("webSocket server_" + port + "_open the connection");
-//        System.out.println(conn.getRemoteSocketAddress().toString());
-//        String strURI="ws:/"+conn.getRemoteSocketAddress().toString();
-//        URI uri=null;
-//        try {
-//            uri=new URI(strURI);
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        MyClient client=new MyClient(uri);
-//        client.connect();
-
+        logger.info("[服务端开启连接] port={}",port);
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        System.out.println("webSocket server_" + port + "_close the connection");
+        logger.info("[服务端关闭连接连接] port={}",port);
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        System.out.println("webSocket server_" + port + "_receive the message:" + message);
-        WebSocketController.server.broadcast("反馈！！！");
+        logger.info("[服务端接收消息] Msg={}",message);
     }
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        System.out.println("webSocket server_" + port + "_ ERROR");
+        logger.info("[服务端出错] port={}",port);
     }
 
     @Override
     public void onStart() {
-        System.out.println("webSocket server_" + port + "_open successfully");
+        logger.info("[服务端开启成功] port={}",port);
     }
 
     public void startServer() {

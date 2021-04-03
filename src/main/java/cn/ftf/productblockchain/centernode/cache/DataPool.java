@@ -1,47 +1,31 @@
 package cn.ftf.productblockchain.centernode.cache;
 
-
-import cn.ftf.productblockchain.centernode.bean.ProductInfo;
-import cn.ftf.productblockchain.centernode.websocket.MyServer;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import cn.ftf.productblockchain.centernode.bean.POJO.ProductInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 数据池
+ * 接收到的商品数据池
  *
  * @Author 房廷飞
- * @Create 2020-12-12 10:39
+ * @Create 2020-12-10 18:04
  */
-
 @Component
 public class DataPool {
-    private List<ProductInfo> productInfoPool;
-    private ObjectMapper mapper=new ObjectMapper();
-    private MyServer myServer=null;
-
-    public DataPool() {
+    private static List<ProductInfo> productInfoPool;
+    private static Logger logger= LoggerFactory.getLogger(DataPool.class);
+    public DataPool(){
         productInfoPool=new ArrayList<>();
     }
 
-    public void addData(ProductInfo productInfo){
-        this.productInfoPool.add(productInfo);
-        System.out.println("Pool Size:"+this.productInfoPool.size());
-        judge();
+    public static void addData(ProductInfo productInfo){
+        productInfoPool.add(productInfo);
+        int size=productInfoPool.size();
+        logger.info("[DataPool数据量]={}",size);
     }
-    private void judge(){
-        String listJson=null;
-        if(this.productInfoPool.size()==5){
-            try {
-                listJson=mapper.writeValueAsString(this.productInfoPool);
-                myServer.broadcast(listJson);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-            System.out.println(listJson);
-        }
-    }
+
 }

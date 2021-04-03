@@ -1,28 +1,33 @@
-package cn.ftf.productblockchain.centernode.bean;
+package cn.ftf.productblockchain.centernode.bean.POJO;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
- * 商品基本信息封装类
+ * ProductInfo
  *
  * @Author 房廷飞
- * @Create 2020-12-12 10:38
+ * @Create 2020-12-11 19:42
  */
 
-
-public class Product implements Serializable {
+public class ProductInfo implements Serializable {
     private String company;
     private String product;
     private String productionDate;
     private String orginPlace;
     private String description;
+    private String notes;
 
-    public Product(String company, String product, String productionDate, String orginPlace, String description) {
+    public ProductInfo(String company, String product, String productionDate, String orginPlace, String description, String notes) {
         this.company = company;
         this.product = product;
         this.productionDate = productionDate;
         this.orginPlace = orginPlace;
         this.description = description;
+        this.notes = notes;
+    }
+    public ProductInfo(){
+
     }
 
     public String getCompany() {
@@ -65,14 +70,41 @@ public class Product implements Serializable {
         this.description = description;
     }
 
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductInfo productInfo1 = (ProductInfo) o;
+        return Objects.equals(company, productInfo1.company) &&
+                Objects.equals(product, productInfo1.product) &&
+                Objects.equals(productionDate, productInfo1.productionDate) &&
+                Objects.equals(orginPlace, productInfo1.orginPlace) &&
+                Objects.equals(description, productInfo1.description) &&
+                Objects.equals(notes, productInfo1.notes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(company, product, productionDate, orginPlace, description, notes);
+    }
+
     @Override
     public String toString() {
-        return "Product{" +
+        return "ProductInfo{" +
                 "company='" + company + '\'' +
                 ", product='" + product + '\'' +
-                ", productionDate=" + productionDate +
+                ", productionDate='" + productionDate + '\'' +
                 ", orginPlace='" + orginPlace + '\'' +
                 ", description='" + description + '\'' +
+                ", notes='" + notes + '\'' +
                 '}';
     }
 }
