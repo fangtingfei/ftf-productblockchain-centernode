@@ -1,16 +1,11 @@
 package cn.ftf.productblockchain.centernode.bean.block;
 
-
 import cn.ftf.productblockchain.centernode.bean.POJO.BroadcastedProductInfo;
 import cn.ftf.productblockchain.centernode.util.ByteUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigInteger;
-import java.time.Instant;
 import java.util.Arrays;
 
 /**
@@ -18,7 +13,6 @@ import java.util.Arrays;
  * @version 1.0
  * @date 2021-03-13 22:33
  */
-@Data
 public class Block {
     public Integer height;
     public long timeStamp;

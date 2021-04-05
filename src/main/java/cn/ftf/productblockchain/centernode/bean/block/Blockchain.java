@@ -1,13 +1,17 @@
 package cn.ftf.productblockchain.centernode.bean.block;
 
 import cn.ftf.productblockchain.centernode.bean.POJO.BroadcastedProductInfo;
+import cn.ftf.productblockchain.centernode.util.ByteUtils;
 import cn.ftf.productblockchain.centernode.util.JacksonUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +25,16 @@ public class Blockchain {
 
     private static ArrayList<Block> blocks=new ArrayList<>();
 
+    public Blockchain() {
+    }
+
+    public static ArrayList<Block> getBlocks() {
+        return blocks;
+    }
+
+    public static void setBlocks(ArrayList<Block> blocks) {
+        Blockchain.blocks = blocks;
+    }
     @PostConstruct
     private void init() throws Exception {
         File blockChainDB = new File("blockchain.db");
@@ -43,7 +57,7 @@ public class Blockchain {
      */
 
     private static void initBlockChainFromDB(String blockJson) {
-        if(blockJson.isBlank()) return;
+        if(blockJson.isBlank()) {return;}
         Block block=null;
         try {
             block = JacksonUtils.jsonToObj(blockJson, Block.class);
@@ -83,15 +97,61 @@ public class Blockchain {
         return block;
     }
 
-    public Blockchain() {
+    /**
+     * 区块合法性验证
+     */
+    public static boolean verifyBlock(Block block) {
+        int currentHeight= block.height;
+        if(currentHeight==0){return true;}
+        Block preBlock=blocks.get(currentHeight-1);
+        String preHash= preBlock.hash;
+        if(!preHash.equals(block.getPreHash())){
+            System.out.println("prehash验证不合法");
+            return false;
+        }
+        //区块Hash校验
+        return verifyBlockData(block);
     }
 
-    public static ArrayList<Block> getBlocks() {
-        return blocks;
+    /**
+     * 区块数据验证
+     */
+    public static boolean verifyBlockData(Block block){
+        byte[] prevBlockHashBytes = {};
+        if (StringUtils.isNoneBlank(block.getPreHash())) {
+            prevBlockHashBytes = new BigInteger(block.getPreHash(), 16).toByteArray();
+        }
+
+        byte[] data =ByteUtils.merge(
+                prevBlockHashBytes,
+                //所有商品信息的默克尔Hash
+                block.hashTransaction(),
+                ByteUtils.toBytes(block.timeStamp)
+        );
+        String shaHex = DigestUtils.sha256Hex(data);
+        if(!block.hash.equals(shaHex)){
+            System.out.println("区块Hash校验失败");
+            return false;
+        }
+        return true;
     }
 
-    public static void setBlocks(ArrayList<Block> blocks) {
-        Blockchain.blocks = blocks;
+    public static Block getBlockByHeight(int height){
+        return blocks.get(height);
+    }
+
+    /**
+     * 全链校验
+     * @return
+     */
+    public static boolean verifyAllBlockChain() throws Exception {
+        for (int i = 0; i < blocks.size(); i++) {
+            if(!verifyBlock(blocks.get(i))){
+                System.out.println("全链校验失败，失败目标block"+blocks.get(i));
+                return false;
+            }
+        }
+        return true;
     }
 
 }
