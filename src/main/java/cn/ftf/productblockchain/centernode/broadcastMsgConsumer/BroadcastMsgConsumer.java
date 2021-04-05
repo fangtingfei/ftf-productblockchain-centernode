@@ -9,6 +9,8 @@ import cn.ftf.productblockchain.centernode.util.RSAUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 /**
  * @author fangtingfei
  * @version 1.0
@@ -18,12 +20,12 @@ public class BroadcastMsgConsumer {
 
     private static Logger logger = LoggerFactory.getLogger(BroadcastMsgConsumer.class);
 
-    public static void handleProductMsg(String broadcastMsgJson) {
+    public static void handleProductMsg(String broadcastMsgJson) throws IOException {
         BroadcastedProductInfo broadcastedProductInfo = JacksonUtils.jsonToObj(broadcastMsgJson, BroadcastedProductInfo.class);
         String productJson = null;
         ProductInfo product = null;
         try {
-            product = new ProductInfo(broadcastedProductInfo.getCompany(), broadcastedProductInfo.getProduct(), broadcastedProductInfo.getProductionDate(), broadcastedProductInfo.getOrginPlace(), broadcastedProductInfo.getDescription(), broadcastedProductInfo.getNotes());
+            product = new ProductInfo(broadcastedProductInfo.getCompany(), broadcastedProductInfo.getProduct(),broadcastedProductInfo.getTimeStamp(), broadcastedProductInfo.getOrginPlace(), broadcastedProductInfo.getDescription(), broadcastedProductInfo.getNotes());
             productJson = JacksonUtils.objToJson(product);
             logger.info("[提取商品信息]productJson:" + productJson);
         } catch (Exception e) {
@@ -31,7 +33,7 @@ public class BroadcastMsgConsumer {
         }
         boolean boo = RSAUtils.verify("SHA256withRSA", RSAUtils.getPublicKeyFromString("RSA", broadcastedProductInfo.getSenderPublicKey()), productJson, broadcastedProductInfo.getSignaturedData());
         if (boo) {
-            DataPool.addData(product);
+            DataPool.addData(broadcastedProductInfo);
             logger.info("[数据校验成功，录入成功] productInfo:" + product);
             return;
         }

@@ -1,7 +1,10 @@
 package cn.ftf.productblockchain.centernode.bean.POJO;
 
+import cn.ftf.productblockchain.centernode.util.SerializeUtils;
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.Arrays;
 
 /**
  * 商品录入信息
@@ -13,23 +16,24 @@ import java.util.Objects;
 public class BroadcastedProductInfo implements Serializable {
     private String company;
     private String product;
-    private String productionDate;
+    private Long timeStamp;
     private String orginPlace;
     private String description;
     private String notes;
+    private byte[] hash;
 
     //扫描终端公钥
     private String senderPublicKey;
     //数据签名
     private String signaturedData;
 
-    public BroadcastedProductInfo(){
+    public BroadcastedProductInfo() {
 
     }
-    public BroadcastedProductInfo(String company, String product, String productionDate, String orginPlace, String description, String notes, String senderPublicKey, String signaturedData) {
+    public BroadcastedProductInfo(String company, String product, Long timeStamp, String orginPlace, String description, String notes, String senderPublicKey, String signaturedData) {
         this.company = company;
         this.product = product;
-        this.productionDate = productionDate;
+        this.timeStamp = timeStamp;
         this.orginPlace = orginPlace;
         this.description = description;
         this.notes = notes;
@@ -37,12 +41,33 @@ public class BroadcastedProductInfo implements Serializable {
         this.signaturedData = signaturedData;
     }
 
-    public String getCompany() {
-        return company;
+    public byte[] hash() {
+        // 使用序列化的方式对Transaction对象进行深度复制
+        byte[] serializeBytes = SerializeUtils.serialize(this);
+        BroadcastedProductInfo copyTx = (BroadcastedProductInfo) SerializeUtils.deserialize(serializeBytes);
+        copyTx.setHash(new byte[]{});
+        return DigestUtils.sha256(SerializeUtils.serialize(copyTx));
+    }
+
+
+    public BroadcastedProductInfo(String company, String product, Long timeStamp, String orginPlace, String description, String notes, byte[] hash, String senderPublicKey, String signaturedData) {
+        this.company = company;
+        this.product = product;
+        this.timeStamp = timeStamp;
+        this.orginPlace = orginPlace;
+        this.description = description;
+        this.notes = notes;
+        this.hash = hash;
+        this.senderPublicKey = senderPublicKey;
+        this.signaturedData = signaturedData;
     }
 
     public void setCompany(String company) {
         this.company = company;
+    }
+
+    public String getCompany() {
+        return company;
     }
 
     public String getProduct() {
@@ -53,12 +78,12 @@ public class BroadcastedProductInfo implements Serializable {
         this.product = product;
     }
 
-    public String getProductionDate() {
-        return productionDate;
+    public Long getTimeStamp() {
+        return timeStamp;
     }
 
-    public void setProductionDate(String productionDate) {
-        this.productionDate = productionDate;
+    public void setTimeStamp(Long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public String getOrginPlace() {
@@ -101,24 +126,13 @@ public class BroadcastedProductInfo implements Serializable {
         this.signaturedData = signaturedData;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BroadcastedProductInfo that = (BroadcastedProductInfo) o;
-        return Objects.equals(company, that.company) &&
-                Objects.equals(product, that.product) &&
-                Objects.equals(productionDate, that.productionDate) &&
-                Objects.equals(orginPlace, that.orginPlace) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(notes, that.notes) &&
-                Objects.equals(senderPublicKey, that.senderPublicKey) &&
-                Objects.equals(signaturedData, that.signaturedData);
+
+    public byte[] getHash() {
+        return hash;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(company, product, productionDate, orginPlace, description, notes, senderPublicKey, signaturedData);
+    public void setHash(byte[] hash) {
+        this.hash = hash;
     }
 
     @Override
@@ -126,10 +140,11 @@ public class BroadcastedProductInfo implements Serializable {
         return "BroadcastedProductInfo{" +
                 "company='" + company + '\'' +
                 ", product='" + product + '\'' +
-                ", productionDate='" + productionDate + '\'' +
+                ", timeStamp=" + timeStamp +
                 ", orginPlace='" + orginPlace + '\'' +
                 ", description='" + description + '\'' +
                 ", notes='" + notes + '\'' +
+                ", hash=" + Arrays.toString(hash) +
                 ", senderPublicKey='" + senderPublicKey + '\'' +
                 ", signaturedData='" + signaturedData + '\'' +
                 '}';

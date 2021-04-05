@@ -13,21 +13,21 @@ import java.util.Objects;
 public class ProductInfo implements Serializable {
     private String company;
     private String product;
-    private String productionDate;
+    private long timeStamp;
     private String orginPlace;
     private String description;
     private String notes;
 
-    public ProductInfo(String company, String product, String productionDate, String orginPlace, String description, String notes) {
+    public ProductInfo() {
+    }
+
+    public ProductInfo(String company, String product, long timeStamp, String orginPlace, String description, String notes) {
         this.company = company;
         this.product = product;
-        this.productionDate = productionDate;
+        this.timeStamp = timeStamp;
         this.orginPlace = orginPlace;
         this.description = description;
         this.notes = notes;
-    }
-    public ProductInfo(){
-
     }
 
     public String getCompany() {
@@ -46,12 +46,12 @@ public class ProductInfo implements Serializable {
         this.product = product;
     }
 
-    public String getProductionDate() {
-        return productionDate;
+    public long getTimeStamp() {
+        return timeStamp;
     }
 
-    public void setProductionDate(String productionDate) {
-        this.productionDate = productionDate;
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public String getOrginPlace() {
@@ -76,35 +76,5 @@ public class ProductInfo implements Serializable {
 
     public void setNotes(String notes) {
         this.notes = notes;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProductInfo productInfo1 = (ProductInfo) o;
-        return Objects.equals(company, productInfo1.company) &&
-                Objects.equals(product, productInfo1.product) &&
-                Objects.equals(productionDate, productInfo1.productionDate) &&
-                Objects.equals(orginPlace, productInfo1.orginPlace) &&
-                Objects.equals(description, productInfo1.description) &&
-                Objects.equals(notes, productInfo1.notes);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(company, product, productionDate, orginPlace, description, notes);
-    }
-
-    @Override
-    public String toString() {
-        return "ProductInfo{" +
-                "company='" + company + '\'' +
-                ", product='" + product + '\'' +
-                ", productionDate='" + productionDate + '\'' +
-                ", orginPlace='" + orginPlace + '\'' +
-                ", description='" + description + '\'' +
-                ", notes='" + notes + '\'' +
-                '}';
     }
 }
