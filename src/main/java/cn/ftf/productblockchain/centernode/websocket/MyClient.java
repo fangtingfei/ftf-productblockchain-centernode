@@ -50,6 +50,11 @@ public class MyClient extends WebSocketClient {
                 }
                 break;
             }
+            case 1:{
+                logger.info("[客户端接收打包区块信息] Msg={}", message);
+                BroadcastMsgConsumer.handleBlockMsg(broadcastMsg.getMsg());
+                break;
+            }
             default:{
                 logger.info("[广播消息体检测异常] Msg={}",message);
             }

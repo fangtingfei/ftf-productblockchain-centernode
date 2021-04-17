@@ -3,6 +3,9 @@ package cn.ftf.productblockchain.centernode.broadcastMsgConsumer;
 
 import cn.ftf.productblockchain.centernode.bean.POJO.BroadcastedProductInfo;
 import cn.ftf.productblockchain.centernode.bean.POJO.ProductInfo;
+import cn.ftf.productblockchain.centernode.bean.block.Block;
+import cn.ftf.productblockchain.centernode.bean.block.Blockchain;
+import cn.ftf.productblockchain.centernode.bean.block.MiniBlock;
 import cn.ftf.productblockchain.centernode.cache.DataPool;
 import cn.ftf.productblockchain.centernode.util.JacksonUtils;
 import cn.ftf.productblockchain.centernode.util.RSAUtils;
@@ -38,6 +41,19 @@ public class BroadcastMsgConsumer {
             return;
         }
         logger.info("[数据校验失败，录入失败！] productInfo:" + product);
+
+    }
+    public static void handleBlockMsg(String broadcastMsgJson){
+        Block block = JacksonUtils.jsonToObj(broadcastMsgJson, Block.class);
+        MiniBlock miniBlock = null;
+        //区块校验
+        Blockchain.verifyBlock(block);
+        try {
+            miniBlock=new MiniBlock(block.height,block.timeStamp,block.hash,block.preHash);
+            logger.info("[生成MiniBlock] miniBlock={}", miniBlock);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 }

@@ -42,11 +42,7 @@ public class BroadcastedProductInfo implements Serializable {
     }
 
     public byte[] hash() {
-        // 使用序列化的方式对Transaction对象进行深度复制
-        byte[] serializeBytes = SerializeUtils.serialize(this);
-        BroadcastedProductInfo copyTx = (BroadcastedProductInfo) SerializeUtils.deserialize(serializeBytes);
-        copyTx.setHash(new byte[]{});
-        return DigestUtils.sha256(SerializeUtils.serialize(copyTx));
+        return DigestUtils.sha256(String.valueOf(this.timeStamp)+this.signaturedData);
     }
 
 

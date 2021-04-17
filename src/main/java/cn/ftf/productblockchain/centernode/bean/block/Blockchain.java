@@ -13,10 +13,11 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
- * @deprecated 区块链实体类
+ * 区块链实体类
  * @author fangtingfei
  * @date 2020/04/04 13:34
  */
@@ -48,6 +49,7 @@ public class Blockchain {
             Blockchain.addBlock(genesisBlock);
         }
         blocks.stream().forEach(blockJson->initBlockChainFromDB(blockJson));
+        System.out.println("中心节点区块链初始化完成，size="+blocks.size());
     }
 
     /**

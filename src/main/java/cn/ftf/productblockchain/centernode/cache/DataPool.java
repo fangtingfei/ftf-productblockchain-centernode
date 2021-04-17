@@ -2,6 +2,7 @@ package cn.ftf.productblockchain.centernode.cache;
 
 import cn.ftf.productblockchain.centernode.bean.POJO.BroadcastedProductInfo;
 import cn.ftf.productblockchain.centernode.bean.POJO.ProductInfo;
+import cn.ftf.productblockchain.centernode.bean.block.Block;
 import cn.ftf.productblockchain.centernode.handle.GenerateBlockHander;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,9 @@ public class DataPool {
                 toBlockList[i]=productInfoPool.get(0);
                 productInfoPool.remove(0);
             }
-            GenerateBlockHander.generateBlock(toBlockList);
+            GenerateBlockHander hander=new GenerateBlockHander();
+            hander.generateBlock(toBlockList);
+
         }
     }
 

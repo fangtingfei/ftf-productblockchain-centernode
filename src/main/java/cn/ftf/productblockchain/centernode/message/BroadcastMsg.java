@@ -6,6 +6,7 @@ package cn.ftf.productblockchain.centernode.message;
  * @date 2021-03-27 19:08
  */
 public class BroadcastMsg {
+    // 0-广播商品信息  1-广播区块
     Integer type;
     String msg;
 
