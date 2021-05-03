@@ -1,12 +1,12 @@
 package cn.ftf.productblockchain.centernode.message;
 
 /**
- * @author fangitnfei
+ * @author fangtingfei
  * @version 1.0
  * @date 2021-03-27 19:08
  */
 public class BroadcastMsg {
-    // 0-广播商品信息  1-广播区块
+    // 0-广播商品信息  1-广播区块 2-共识区块 3-投票信息
     Integer type;
     String msg;
 

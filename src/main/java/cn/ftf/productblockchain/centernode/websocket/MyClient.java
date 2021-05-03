@@ -6,6 +6,9 @@ import cn.ftf.productblockchain.centernode.broadcastMsgConsumer.BroadcastMsgCons
 import cn.ftf.productblockchain.centernode.cache.AddressPool;
 import cn.ftf.productblockchain.centernode.message.BroadcastMsg;
 import cn.ftf.productblockchain.centernode.util.JacksonUtils;
+import lombok.SneakyThrows;
+import org.java_websocket.WebSocket;
+import org.java_websocket.WebSocketImpl;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
@@ -36,6 +39,7 @@ public class MyClient extends WebSocketClient {
         logger.info("[客户端开启连接] URI={}",uri);
     }
 
+    @SneakyThrows
     @Override
     public void onMessage(String message) {
         logger.info("[客户端接收消息] Msg={}", message);
@@ -51,8 +55,18 @@ public class MyClient extends WebSocketClient {
                 break;
             }
             case 1:{
-                logger.info("[客户端接收打包区块信息] Msg={}", message);
-                BroadcastMsgConsumer.handleBlockMsg(broadcastMsg.getMsg());
+                logger.info("[客户端接收待共识收区块信息] Msg={}", message);
+                BroadcastMsgConsumer.handleBlockMsg(broadcastMsg.getMsg(),this);
+                break;
+            }
+            case 2:{
+                logger.info("[客户端接收共识区块信息] Msg={}", message);
+                BroadcastMsgConsumer.handleViewedBlockMsg(broadcastMsg.getMsg());
+                break;
+            }
+            case 3:{
+                logger.info("[客户端接收投票信息] Msg={}", message);
+                BroadcastMsgConsumer.handleVote();
                 break;
             }
             default:{

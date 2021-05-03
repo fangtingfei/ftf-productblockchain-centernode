@@ -145,4 +145,32 @@ public class BroadcastedProductInfo implements Serializable {
                 ", signaturedData='" + signaturedData + '\'' +
                 '}';
     }
+
+
+    // 重写hashcode方法
+    @Override
+    public int hashCode() {
+        int result = timeStamp.toString().hashCode();
+        return result;
+    }
+
+    // 重写equals方法
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof BroadcastedProductInfo)) {
+            // instanceof 已经处理了obj = null的情况
+            return false;
+        }
+        BroadcastedProductInfo stuObj = (BroadcastedProductInfo) obj;
+        // 地址相等
+        if (this == stuObj) {
+            return true;
+        }
+        // 如果两个对象姓名、年龄、性别相等，我们认为两个对象相等
+        if (stuObj.timeStamp.toString().equals(this.timeStamp.toString())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

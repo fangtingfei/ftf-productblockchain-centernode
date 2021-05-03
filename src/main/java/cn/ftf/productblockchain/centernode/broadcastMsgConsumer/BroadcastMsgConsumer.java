@@ -7,10 +7,16 @@ import cn.ftf.productblockchain.centernode.bean.block.Block;
 import cn.ftf.productblockchain.centernode.bean.block.Blockchain;
 import cn.ftf.productblockchain.centernode.bean.block.MiniBlock;
 import cn.ftf.productblockchain.centernode.cache.DataPool;
+import cn.ftf.productblockchain.centernode.cache.View;
+import cn.ftf.productblockchain.centernode.handle.GenerateBlockHander;
+import cn.ftf.productblockchain.centernode.message.BroadcastMsg;
 import cn.ftf.productblockchain.centernode.util.JacksonUtils;
 import cn.ftf.productblockchain.centernode.util.RSAUtils;
+import org.java_websocket.client.WebSocketClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 
@@ -22,7 +28,6 @@ import java.io.IOException;
 public class BroadcastMsgConsumer {
 
     private static Logger logger = LoggerFactory.getLogger(BroadcastMsgConsumer.class);
-
     public static void handleProductMsg(String broadcastMsgJson) throws IOException {
         BroadcastedProductInfo broadcastedProductInfo = JacksonUtils.jsonToObj(broadcastMsgJson, BroadcastedProductInfo.class);
         String productJson = null;
@@ -43,17 +48,41 @@ public class BroadcastMsgConsumer {
         logger.info("[数据校验失败，录入失败！] productInfo:" + product);
 
     }
-    public static void handleBlockMsg(String broadcastMsgJson){
+    public static void handleBlockMsg(String broadcastMsgJson, WebSocketClient client){
         Block block = JacksonUtils.jsonToObj(broadcastMsgJson, Block.class);
         MiniBlock miniBlock = null;
         //区块校验
-        Blockchain.verifyBlock(block);
-        try {
-            miniBlock=new MiniBlock(block.height,block.timeStamp,block.hash,block.preHash);
-            logger.info("[生成MiniBlock] miniBlock={}", miniBlock);
-        }catch (Exception e){
-            e.printStackTrace();
+        boolean boo=Blockchain.verifyBlock(block);
+        if(boo){
+            logger.info("[区块数据校验成功] block:" + block);
         }
+        BroadcastedProductInfo[] list = block.getList();
+        boolean matchFlag=true;
+        for (BroadcastedProductInfo broadcastedProductInfo:list){
+            if(!DataPool.getProductInfoPool().contains(broadcastedProductInfo)){
+                matchFlag=false;
+            }
+        }
+        BroadcastMsg msg=new BroadcastMsg(3,"VOTE");
+        client.send(JacksonUtils.objToJson(msg));
+//        try {
+//            miniBlock=new MiniBlock(block.height,block.timeStamp,block.hash,block.preHash);
+//            logger.info("[生成MiniBlock] miniBlock={}", miniBlock);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
 
+    }
+    public static void handleViewedBlockMsg(String broadcastMsgJson) throws IOException {
+        Block block = JacksonUtils.jsonToObj(broadcastMsgJson, Block.class);
+        Blockchain.addBlock(block);
+    }
+    public static void handleVote() throws IOException {
+        View.voteNum++;
+        if(View.canCreateBlock()){
+            Block block=View.getCacheBlock();
+            GenerateBlockHander hander=new GenerateBlockHander();
+            hander.generateBlock(block.getList(),true);
+        }
     }
 }

@@ -21,16 +21,23 @@ import java.io.IOException;
 public class GenerateBlockHander {
     private  Logger logger= LoggerFactory.getLogger(getClass());
     private  MyServer server= WebSocketInit.server;
-    public  void generateBlock(BroadcastedProductInfo[] toBlockList) throws IOException {
+    public  void generateBlock(BroadcastedProductInfo[] toBlockList,Boolean boo) throws IOException {
         Block newBlock = Blockchain.mineBlock((toBlockList));
-        Blockchain.addBlock(newBlock);
-        broadcastBlock(newBlock);
+        if(boo){
+            Blockchain.addBlock(newBlock);
+        }
+        broadcastBlock(newBlock,boo);
 
     }
-    public  void broadcastBlock(Block block){
+    public  void broadcastBlock(Block block,Boolean boo){
         String blockJson = JacksonUtils.objToJson(block);
         logger.info("[新区块转化为JSON] blockJson={}",blockJson);
-        BroadcastMsg broadcastMsg=new BroadcastMsg(1,blockJson);
+        BroadcastMsg broadcastMsg=null;
+        if(!boo){
+            broadcastMsg=new BroadcastMsg(1,blockJson);
+        }else {
+            broadcastMsg=new BroadcastMsg(2,blockJson);
+        }
         String broascastMsgJson = JacksonUtils.objToJson(broadcastMsg);
         logger.info("[生成区块广播体JSON] broascastMsgJson={}",broascastMsgJson);
         server.broadcast(broascastMsgJson);
