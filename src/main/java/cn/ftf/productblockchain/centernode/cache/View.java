@@ -18,7 +18,7 @@ public class View {
 
     public static boolean canCreateBlock(){
         int door=AddressPool.addressPoll.size()/2+1;
-        logger.info("节点数："+(AddressPool.addressPoll.size()-1));
+        logger.info("节点数："+(AddressPool.addressPoll.size()));
         logger.info("阈值："+door);
         if(voteNum>=door){
             logger.info("canCreateBlock：true");
@@ -30,5 +30,8 @@ public class View {
     }
     public static Block getCacheBlock(){
         return cacheBlock;
+    }
+    public static void setCacheBlock(Block block){
+        cacheBlock=block;
     }
 }

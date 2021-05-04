@@ -41,7 +41,6 @@ public class MyClient extends WebSocketClient {
 
     @Override
     public void onMessage(String message){
-        logger.info("[客户端接收消息] Msg={}", message);
         BroadcastMsg broadcastMsg = JacksonUtils.jsonToObj(message, BroadcastMsg.class);
         switch (broadcastMsg.getType()) {
             case 0: {

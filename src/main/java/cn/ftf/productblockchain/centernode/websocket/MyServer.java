@@ -41,11 +41,10 @@ public class MyServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        logger.info("[服务端接收消息] Msg={}",message);
         BroadcastMsg broadcastMsg = JacksonUtils.jsonToObj(message, BroadcastMsg.class);
         switch (broadcastMsg.getType()) {
             case 0: {
-                logger.info("[客户端接收商品信息] Msg={}", message);
+                logger.info("[服务端接收商品信息] Msg={}", message);
                 try {
                     BroadcastMsgConsumer.handleProductMsg(broadcastMsg.getMsg());
                 } catch (IOException e) {
@@ -54,7 +53,7 @@ public class MyServer extends WebSocketServer {
                 break;
             }
             case 2:{
-                logger.info("[客户端接收共识区块信息] Msg={}", message);
+                logger.info("[服务端接收共识区块信息] Msg={}", message);
                 try {
                     BroadcastMsgConsumer.handleViewedBlockMsg(broadcastMsg.getMsg());
                 } catch (IOException e) {
@@ -63,7 +62,7 @@ public class MyServer extends WebSocketServer {
                 break;
             }
             case 3:{
-                logger.info("[客户端接收投票信息] Msg={}", message);
+                logger.info("[服务端接收投票信息] Msg={}", message);
                 try {
                     BroadcastMsgConsumer.handleVote();
                 } catch (IOException e) {

@@ -4,6 +4,7 @@ import cn.ftf.productblockchain.centernode.bean.WebSocketInit;
 import cn.ftf.productblockchain.centernode.bean.block.Block;
 import cn.ftf.productblockchain.centernode.bean.POJO.BroadcastedProductInfo;
 import cn.ftf.productblockchain.centernode.bean.block.Blockchain;
+import cn.ftf.productblockchain.centernode.cache.View;
 import cn.ftf.productblockchain.centernode.message.BroadcastMsg;
 import cn.ftf.productblockchain.centernode.util.JacksonUtils;
 import cn.ftf.productblockchain.centernode.websocket.MyServer;
@@ -26,6 +27,7 @@ public class GenerateBlockHander {
         if(boo){
             Blockchain.addBlock(newBlock);
         }
+        View.setCacheBlock(newBlock);
         broadcastBlock(newBlock,boo);
 
     }
