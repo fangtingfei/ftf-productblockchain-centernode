@@ -39,9 +39,8 @@ public class MyClient extends WebSocketClient {
         logger.info("[客户端开启连接] URI={}",uri);
     }
 
-    @SneakyThrows
     @Override
-    public void onMessage(String message) {
+    public void onMessage(String message){
         logger.info("[客户端接收消息] Msg={}", message);
         BroadcastMsg broadcastMsg = JacksonUtils.jsonToObj(message, BroadcastMsg.class);
         switch (broadcastMsg.getType()) {
@@ -61,12 +60,20 @@ public class MyClient extends WebSocketClient {
             }
             case 2:{
                 logger.info("[客户端接收共识区块信息] Msg={}", message);
-                BroadcastMsgConsumer.handleViewedBlockMsg(broadcastMsg.getMsg());
+                try {
+                    BroadcastMsgConsumer.handleViewedBlockMsg(broadcastMsg.getMsg());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
             case 3:{
                 logger.info("[客户端接收投票信息] Msg={}", message);
-                BroadcastMsgConsumer.handleVote();
+                try {
+                    BroadcastMsgConsumer.handleVote();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
             }
             default:{

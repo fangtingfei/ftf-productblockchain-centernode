@@ -28,7 +28,7 @@ public class DataPool {
         productInfoPool.add(broadcastedProductInfo);
         int size=productInfoPool.size();
         logger.info("[DataPool数据量]={}",size);
-        if(productInfoPool.size()==4){
+        if(productInfoPool.size()%4==0){
             BroadcastedProductInfo[] toBlockList=new BroadcastedProductInfo[4];
             for (int i = 0; i < 4; i++) {
                 toBlockList[i]=productInfoPool.get(0);
