@@ -1,9 +1,12 @@
 package cn.ftf.productblockchain.centernode.bean.block;
 
 import cn.ftf.productblockchain.centernode.bean.POJO.BroadcastedProductInfo;
+import cn.ftf.productblockchain.centernode.cache.DataPool;
 import cn.ftf.productblockchain.centernode.util.ByteUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -19,6 +22,9 @@ public class Block {
     public BroadcastedProductInfo[] list;
     public String hash;
     public String preHash;
+
+
+    private static Logger logger= LoggerFactory.getLogger(DataPool.class);
 
     /**
      * <p> 创建创世区块 </p>
@@ -42,7 +48,7 @@ public class Block {
         byte[] data = prepareData(block);
         String shaHex = DigestUtils.sha256Hex(data);
         block.setHash(shaHex);
-        System.out.println("[创建区块] "+block);
+        logger.info("[创建区块] {}",block);
         return block;
     }
 

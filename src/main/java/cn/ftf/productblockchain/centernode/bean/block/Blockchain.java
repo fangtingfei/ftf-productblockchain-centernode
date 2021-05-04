@@ -1,11 +1,14 @@
 package cn.ftf.productblockchain.centernode.bean.block;
 
 import cn.ftf.productblockchain.centernode.bean.POJO.BroadcastedProductInfo;
+import cn.ftf.productblockchain.centernode.cache.DataPool;
 import cn.ftf.productblockchain.centernode.util.ByteUtils;
 import cn.ftf.productblockchain.centernode.util.JacksonUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -25,6 +28,7 @@ import java.util.List;
 public class Blockchain {
 
     private static ArrayList<Block> blocks=new ArrayList<>();
+    private static Logger logger= LoggerFactory.getLogger(DataPool.class);
 
     public Blockchain() {
     }
@@ -49,7 +53,7 @@ public class Blockchain {
             Blockchain.addBlock(genesisBlock);
         }
         blocks.stream().forEach(blockJson->initBlockChainFromDB(blockJson));
-        System.out.println("中心节点区块链初始化完成，size="+blocks.size());
+        logger.info("中心节点区块链初始化完成，size="+blocks.size());
     }
 
     /**

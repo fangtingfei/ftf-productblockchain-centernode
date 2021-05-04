@@ -31,7 +31,7 @@ public class DataPool {
         if(productInfoPool.size()%4==0){
             BroadcastedProductInfo[] toBlockList=new BroadcastedProductInfo[4];
             for (int i = 0; i < 4; i++) {
-                toBlockList[i]=productInfoPool.get(0);
+                toBlockList[i]=productInfoPool.get(i);
                 //productInfoPool.remove(0);
             }
             GenerateBlockHander hander=new GenerateBlockHander();
